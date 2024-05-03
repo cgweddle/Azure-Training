@@ -2,9 +2,12 @@
 param sku string = 'S0'
 param location string = 'eastus'
 param skuKind string='OpenAI'
+param openAiName string = 'OpenAIWeddle'
+param gptName string = 'gpt-weddle'
+param embeddingName string = 'embedding-weddle'
 
-resource openAi 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
-  name: 'weddleai4'
+resource openai 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
+  name: openAiName
   location: location
   sku: {
     name: sku
@@ -14,19 +17,18 @@ resource openAi 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
 }
 
 
-resource openaiDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
-  name: 'weddlepgt'
+resource embeddingDeployment 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = {
+  name: embeddingName
+  parent: openai
   sku: {
-    name: sku
+    name: 'Standard'
+    capacity: 20
   }
-  parent: openAi
   properties: {
     model: {
+      name: 'text-embedding-ada-002'
+      version: '2'
       format: 'OpenAI'
-      name: 'gpt-35-turbo-instruct'
-      version: '0914 (Default)'
     }
-    raiPolicyName: 'Microsoft.Default'
-    versionUpgradeOption: 'OnceCurrentVersionExpired'
   }
 }
